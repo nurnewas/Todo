@@ -54,8 +54,23 @@ app.get('/', (req: Request, res: Response) => {
 })
 
 //! Post Route 
-app.post('/', (req: Request, res: Response) => {
-    console.log(req.body);
+app.post('/users', async (req: Request, res: Response) => {
+    const { name, email } = req.body
+
+    try {
+        const result = await pool.query(`
+    INSERT INTO users(name,email) VALUES($1, $2) RETURNING *
+    `, [name, email])
+        console.log(result);
+
+        res.send({ message: "Data Inserted" })
+    } catch (err: any) {
+        res.status(500).json({
+            success: false,
+            message: err.message
+        })
+    }
+
     res.status(200).json({
         success: true,
         message: "Api Is working "
