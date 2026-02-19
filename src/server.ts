@@ -153,6 +153,38 @@ app.put("/users/:id", async (req: Request, res: Response) => {
         })
     }
 })
+
+//! Delete user from DB
+app.delete("/users/:id", async (req: Request, res: Response) => {
+    // console.log(req.params.id);
+    try {
+        const result = await pool.query(`
+            DELETE FROM users WHERE id = $1
+            `, [req.params.id])
+
+        if (result.rows.length === 0) {
+
+            res.status(201).json({
+                success: true,
+                message: "User Deleted",
+                data: null,
+            })
+        } else {
+            res.status(404).json({
+                success: false,
+                message: "User Not Found"
+            })
+        }
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "res."
+        })
+    }
+})
+
+
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 })
