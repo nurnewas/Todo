@@ -208,6 +208,26 @@ app.post("/todos", async (req: Request, res: Response) => {
 })
 
 
+//! Get Todos
+app.get("/todos", async (req: Request, res: Response) => {
+    try {
+        const result = await pool.query(`
+    SELECT * FROM todos
+    `)
+        res.status(201).json({
+            success: true,
+            message: "User retrieved successfully ",
+            data: result.rows
+        })
+    } catch (err: any) {
+        res.status(500).json({
+            success: false,
+            message: err.message,
+            details: err
+        })
+    }
+})
+
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 })
