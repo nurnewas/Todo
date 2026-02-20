@@ -216,7 +216,7 @@ app.get("/todos", async (req: Request, res: Response) => {
     `)
         res.status(201).json({
             success: true,
-            message: "User retrieved successfully ",
+            message: "Todos retrieved successfully ",
             data: result.rows
         })
     } catch (err: any) {
@@ -228,6 +228,15 @@ app.get("/todos", async (req: Request, res: Response) => {
     }
 })
 
+
+//! 404
+app.use((req: Request, res: Response) => {
+    res.status(404).json({
+        success: false,
+        message: "Not Found",
+        data: req.path
+    })
+})
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 })
