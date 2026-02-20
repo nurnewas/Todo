@@ -58,7 +58,7 @@ app.get('/', logger, (req: Request, res: Response) => {
 })
 
 //! Users CRUD
-app.post('/users', async (req: Request, res: Response) => {
+app.post('/users', logger, async (req: Request, res: Response) => {
     const { name, email } = req.body
 
     try {
@@ -79,7 +79,7 @@ app.post('/users', async (req: Request, res: Response) => {
 })
 
 //! Get all Users 
-app.get("/users", async (req: Request, res: Response) => {
+app.get("/users", logger, async (req: Request, res: Response) => {
     try {
         const result = await pool.query(`
     SELECT * FROM users
@@ -100,7 +100,7 @@ app.get("/users", async (req: Request, res: Response) => {
 
 
 //! get Single User by Id 
-app.get("/users/:id", async (req: Request, res: Response) => {
+app.get("/users/:id", logger, async (req: Request, res: Response) => {
     // console.log(req.params.id);
     try {
         const result = await pool.query(`
@@ -129,7 +129,7 @@ app.get("/users/:id", async (req: Request, res: Response) => {
 })
 
 //! Single user update 
-app.put("/users/:id", async (req: Request, res: Response) => {
+app.put("/users/:id", logger, async (req: Request, res: Response) => {
     // console.log(req.params.id);
     const { name, email } = req.body;
     try {
@@ -159,7 +159,7 @@ app.put("/users/:id", async (req: Request, res: Response) => {
 })
 
 //! Delete user from DB
-app.delete("/users/:id", async (req: Request, res: Response) => {
+app.delete("/users/:id", logger, async (req: Request, res: Response) => {
     // console.log(req.params.id);
     try {
         const result = await pool.query(`
@@ -191,7 +191,7 @@ app.delete("/users/:id", async (req: Request, res: Response) => {
 //! Todos CRUD
 
 //! Update Single User
-app.post("/todos", async (req: Request, res: Response) => {
+app.post("/todos", logger, async (req: Request, res: Response) => {
     const { user_id, title } = req.body
     try {
 
@@ -213,7 +213,7 @@ app.post("/todos", async (req: Request, res: Response) => {
 
 
 //! Get Todos
-app.get("/todos", async (req: Request, res: Response) => {
+app.get("/todos", logger, async (req: Request, res: Response) => {
     try {
         const result = await pool.query(`
     SELECT * FROM todos
@@ -232,6 +232,34 @@ app.get("/todos", async (req: Request, res: Response) => {
     }
 })
 
+//! get Single Todo by Id 
+app.get("/todos/:id", logger, async (req: Request, res: Response) => {
+    // console.log(req.params.id);
+    try {
+        const result = await pool.query(`
+            SELECT * FROM todos WHERE id = $1
+            `, [req.params.id])
+
+        if (result.rows.length === 0) {
+            res.status(404).json({
+                success: false,
+                message: "Todos Not Found"
+            })
+        } else {
+            res.status(201).json({
+                success: true,
+                message: "Todo Fetched Successfully",
+                data: result.rows[0]
+            })
+        }
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "res."
+        })
+    }
+})
 
 //! 404
 app.use((req: Request, res: Response) => {
