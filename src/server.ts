@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express"
-import { Pool } from "pg"
+import { Pool, Result } from "pg"
 import dotenv from "dotenv"
 import path from "path"
 
@@ -162,24 +162,47 @@ app.delete("/users/:id", async (req: Request, res: Response) => {
             DELETE FROM users WHERE id = $1
             `, [req.params.id])
 
-        if (result.rows.length === 0) {
-
+        if (result.rowCount === 0) {
+            res.status(404).json({
+                success: false,
+                message: "User Not Found"
+            })
+        } else {
             res.status(201).json({
                 success: true,
                 message: "User Deleted",
                 data: null,
-            })
-        } else {
-            res.status(404).json({
-                success: false,
-                message: "User Not Found"
             })
         }
 
     } catch (error) {
         res.status(500).json({
             success: false,
-            message: "res."
+            message: " User Not found "
+        })
+    }
+})
+
+
+//! Todos CRUD
+
+//! Update Single User
+app.post("/todos", async (req: Request, res: Response) => {
+    const { user_id, title } = req.body
+    try {
+
+        const result = await pool.query(`
+                INSERT INTO todos(user_id, title) VALUES($1, $2) RETURNING *
+                `, [user_id, title])
+        res.status(201).json({
+            success: true,
+            message: " Todo added in table",
+            data: result.rows[0]
+        })
+    } catch (err: any) {
+        res.status(400).json({
+            success: true,
+            message: err.message
         })
     }
 })
