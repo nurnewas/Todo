@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express"
+import express, { NextFunction, Request, Response } from "express"
 import { Pool, Result } from "pg"
 import dotenv from "dotenv"
 import path from "path"
@@ -46,10 +46,14 @@ const initDB = async () => {
             `)
 }
 initDB()
-
+//! Logger MiddleWare 
+const logger = (req: Request, res: Response, next: NextFunction) => {
+    console.log(`[${new Date().toISOString()}]  ${req.method} ${req.path} \n`);
+    next()
+}
 
 //! main Route
-app.get('/', (req: Request, res: Response) => {
+app.get('/', logger, (req: Request, res: Response) => {
     res.send('Hello World!')
 })
 
@@ -237,6 +241,8 @@ app.use((req: Request, res: Response) => {
         data: req.path
     })
 })
+
+
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 })
