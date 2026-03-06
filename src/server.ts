@@ -1,7 +1,11 @@
 import express, { NextFunction, Request, Response } from "express"
-import { Pool, Result } from "pg"
+import { Pool } from "pg"
 import dotenv from "dotenv"
 import path from "path"
+import logger from "./middleware/logger"
+import { userRoutes } from "./modules/users/users.route"
+
+
 
 
 dotenv.config({ path: path.join(process.cwd(), '.env') })
@@ -13,7 +17,7 @@ app.use(express.json())
 
 
 //DB
-const pool = new Pool({
+export const pool = new Pool({
     connectionString: `${process.env.CONNECTION_STRING}`
 })
 
@@ -46,57 +50,23 @@ const initDB = async () => {
             `)
 }
 initDB()
-//! Logger MiddleWare 
 
 
-//! main Route
+//! main Route == localhost:8080 ==> "/"
 app.get('/', logger, (req: Request, res: Response) => {
     res.send('Hello World!')
 })
 
 //! Users CRUD
-app.post('/users', logger, async (req: Request, res: Response) => {
-    const { name, email } = req.body
-
-    try {
-        const result = await pool.query(`
-    INSERT INTO users(name,email) VALUES($1, $2) RETURNING *
-    `, [name, email])
-        // console.log(result.rows[0]);
-        res.status(201).json({
-            success: true,
-            message: "Data inserted successfully"
-        })
-    } catch (err: any) {
-        res.status(500).json({
-            success: false,
-            message: err.message
-        })
-    }
-})
+//! localhost:8080/user ==> "/"
+app.use("/users", userRoutes)
 
 //! Get all Users 
-app.get("/users", logger, async (req: Request, res: Response) => {
-    try {
-        const result = await pool.query(`
-    SELECT * FROM users
-    `)
-        res.status(201).json({
-            success: true,
-            message: "User retrieved successfully ",
-            data: result.rows
-        })
-    } catch (err: any) {
-        res.status(500).json({
-            success: false,
-            message: err.message,
-            details: err
-        })
-    }
-})
 
-
+// app.get("/users", logger, )
 //! get Single User by Id 
+
+
 app.get("/users/:id", logger, async (req: Request, res: Response) => {
     // console.log(req.params.id);
     try {
