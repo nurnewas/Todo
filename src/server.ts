@@ -59,43 +59,13 @@ app.get('/', logger, (req: Request, res: Response) => {
 })
 
 //! Users CRUD
-//! localhost:8080/user ==> "/"
+//? localhost:8080/user ==> "/"
 app.use("/users", userRoutes)
 
 
-//! Delete user from DB
-app.delete("/users/:id", logger, async (req: Request, res: Response) => {
-    // console.log(req.params.id);
-    try {
-        const result = await pool.query(`
-            DELETE FROM users WHERE id = $1
-            `, [req.params.id])
-
-        if (result.rowCount === 0) {
-            res.status(404).json({
-                success: false,
-                message: "User Not Found"
-            })
-        } else {
-            res.status(201).json({
-                success: true,
-                message: "User Deleted",
-                data: null,
-            })
-        }
-
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: " User Not found "
-        })
-    }
-})
-
 
 //! Todos CRUD
-
-//! Update Single User
+//? Update Single User
 app.post("/todos", logger, async (req: Request, res: Response) => {
     const { user_id, title } = req.body
     try {

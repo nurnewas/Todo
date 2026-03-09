@@ -34,4 +34,14 @@ const updateSingleUser = async (name: string, email: string, id: string) => {
     return result;
 }
 
-export const userService = { createUserLogic, getUserLogic, getSingleUserLogic, updateSingleUser }
+
+//! Delete user from DB
+const deleteUser = async (id: string) => {
+    const result = await pool.query(`
+            DELETE FROM users WHERE id = $1
+            `, [id])
+    return result;
+}
+
+
+export const userService = { createUserLogic, getUserLogic, getSingleUserLogic, updateSingleUser, deleteUser }
