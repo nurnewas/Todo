@@ -1,6 +1,8 @@
 import { Request, Response } from "express"
 import { todoService } from "./todos.service"
 
+
+//! Create Todos 
 const createTodos = async (req: Request, res: Response) => {
     const { user_id, title } = req.body
     try {
@@ -18,4 +20,52 @@ const createTodos = async (req: Request, res: Response) => {
     }
 }
 
-export const todoController = { createTodos }
+//! Get Todos 
+const getTodos = async (req: Request, res: Response) => {
+    try {
+        const result = await todoService.getTodos()
+        res.status(201).json({
+            success: true,
+            message: "Todos retrieved successfully ",
+            data: result.rows
+        })
+    } catch (err: any) {
+        res.status(500).json({
+            success: false,
+            message: err.message,
+            details: err
+        })
+    }
+}
+
+const getSingleTodo = async (req: Request, res: Response) => {
+    try {
+        const result = await todoService.getSingleTodo(req.params.id)
+
+        if (result.rows.length === 0) {
+            res.status(404).json({
+                success: false,
+                message: "Todos Not Found"
+            })
+        } else {
+            res.status(201).json({
+                success: true,
+                message: "Todo Fetched Successfully",
+                data: result.rows[0]
+            })
+        }
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "res."
+        })
+    }
+}
+
+
+export const todoController = {
+    createTodos,
+    getTodos,
+    getSingleTodo
+}

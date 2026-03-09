@@ -1,10 +1,9 @@
-import express, { NextFunction, Request, Response } from "express"
+import express, { Request, Response } from "express"
 import { Pool } from "pg"
 import dotenv from "dotenv"
 import path from "path"
 import logger from "./middleware/logger"
 import { userRoutes } from "./modules/users/users.route"
-import { userControllers } from "./modules/users/users.controller"
 import { todoRoutes } from "./modules/todos/todos.route"
 
 
@@ -69,57 +68,6 @@ app.use("/users", userRoutes)
 //? Update Single User
 app.use("/todos", todoRoutes)
 
-
-
-
-//! Get Todos
-app.get("/todos", logger, async (req: Request, res: Response) => {
-    try {
-        const result = await pool.query(`
-    SELECT * FROM todos
-    `)
-        res.status(201).json({
-            success: true,
-            message: "Todos retrieved successfully ",
-            data: result.rows
-        })
-    } catch (err: any) {
-        res.status(500).json({
-            success: false,
-            message: err.message,
-            details: err
-        })
-    }
-})
-
-//! get Single Todo by Id 
-app.get("/todos/:id", logger, async (req: Request, res: Response) => {
-    // console.log(req.params.id);
-    try {
-        const result = await pool.query(`
-            SELECT * FROM todos WHERE id = $1
-            `, [req.params.id])
-
-        if (result.rows.length === 0) {
-            res.status(404).json({
-                success: false,
-                message: "Todos Not Found"
-            })
-        } else {
-            res.status(201).json({
-                success: true,
-                message: "Todo Fetched Successfully",
-                data: result.rows[0]
-            })
-        }
-
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: "res."
-        })
-    }
-})
 
 
 //! Single user update 

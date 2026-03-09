@@ -8,4 +8,23 @@ const createTodo = async (user_id: number | string, title: string) => {
     return result;
 }
 
-export const todoService = { createTodo}
+
+//! get todos
+const getTodos = async () => {
+    const result = await pool.query(`
+    SELECT * FROM todos
+    `)
+    return result;
+}
+
+const getSingleTodo = async (id: any) => {
+    const result = await pool.query(`
+            SELECT * FROM todos WHERE id = $1
+            `, [id])
+    return result;
+}
+export const todoService = {
+    createTodo,
+    getTodos,
+    getSingleTodo
+}
