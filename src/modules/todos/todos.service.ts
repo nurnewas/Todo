@@ -1,3 +1,4 @@
+import { Result } from "pg";
 import { pool } from "../../config/db"
 
 const createTodo = async (user_id: number | string, title: string) => {
@@ -23,8 +24,20 @@ const getSingleTodo = async (id: any) => {
             `, [id])
     return result;
 }
+
+//! Single Todo update 
+const singleTodoUpdate = async (user_id:string, title: string, id: string) =>{
+    const result = await pool.query(`
+            UPDATE todos SET user_id=$1, title=$2 WHERE id=$3 RETURNING *
+            `, [user_id, title, id])
+            return result
+}
+
+
+
 export const todoService = {
     createTodo,
     getTodos,
-    getSingleTodo
+    getSingleTodo,
+    singleTodoUpdate
 }

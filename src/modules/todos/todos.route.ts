@@ -15,6 +15,9 @@ router.get("/", todoController.getTodos)
 //! Get single Todo
 router.get("/:id", todoController.getSingleTodo)
 
+//! Single Todo update 
+router.put("/:id", todoController.updateUser)
+
 
 
 export const todoRoutes = router;

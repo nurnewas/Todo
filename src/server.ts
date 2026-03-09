@@ -70,35 +70,10 @@ app.use("/todos", todoRoutes)
 
 
 
-//! Single user update 
-app.put("/todos/:id", logger, async (req: Request, res: Response) => {
-    // console.log(req.params.id);
-    const { user_id, title } = req.body;
-    try {
-        const result = await pool.query(`
-            UPDATE todos SET user_id=$1, title=$2 WHERE id=$3 RETURNING *
-            `, [user_id, title, req.params.id])
+//? Single Todo update 
+app.put("/todos/:id", logger, )
 
-        if (result.rows.length === 0) {
-            res.status(404).json({
-                success: false,
-                message: "Todo Not Found"
-            })
-        } else {
-            res.status(201).json({
-                success: true,
-                message: "Todo Updated Successfully",
-                data: result.rows[0]
-            })
-        }
 
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: "There is no todo"
-        })
-    }
-})
 //! 404app   res.status(404).json({        success: false,        message: "Not Found",        data: req.path    })})app.listen(port, () => {    console.log(`Example app listening on port ${port}`)})
 app.use((req: Request, res: Response) => {
     res.status(404).json({
