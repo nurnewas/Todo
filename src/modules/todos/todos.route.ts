@@ -19,5 +19,7 @@ router.get("/:id", todoController.getSingleTodo)
 router.put("/:id", todoController.updateUser)
 
 
+router.delete("/:id", todoController.deleteTodo);
+
 
 export const todoRoutes = router;

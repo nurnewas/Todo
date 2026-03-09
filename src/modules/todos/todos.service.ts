@@ -33,11 +33,18 @@ const singleTodoUpdate = async (user_id:string, title: string, id: string) =>{
             return result
 }
 
-
+//! delete Todo
+const deleteTodo = async (id: string) => {
+  const result = await pool.query("DELETE FROM todos WHERE id=$1 RETURNING *", [
+    id,
+  ]);
+  return result;
+};
 
 export const todoService = {
     createTodo,
     getTodos,
     getSingleTodo,
-    singleTodoUpdate
+    singleTodoUpdate,
+    deleteTodo
 }

@@ -70,9 +70,6 @@ app.use("/todos", todoRoutes)
 
 
 
-//? Single Todo update 
-app.put("/todos/:id", logger, )
-
 
 //! 404app   res.status(404).json({        success: false,        message: "Not Found",        data: req.path    })})app.listen(port, () => {    console.log(`Example app listening on port ${port}`)})
 app.use((req: Request, res: Response) => {
