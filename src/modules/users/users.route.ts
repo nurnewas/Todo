@@ -12,6 +12,13 @@ export const router = express.Router()
 router.post("/", userControllers.createUser)
 
 
+//! User Get Route
 router.get("/", userControllers.getUser)
+
+//! User Get single Route
+router.get("/:id", userControllers.getSingleUser)
+
+//! User Update Single Users
+router.put("/:id", userControllers.updateSingleUser)
 
 export const userRoutes = router;

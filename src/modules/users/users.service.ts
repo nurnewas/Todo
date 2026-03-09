@@ -10,6 +10,7 @@ const createUserLogic = async (name: string, email: string) => {
     return result
 }
 
+//! Get user DB Logic
 const getUserLogic = async () => {
     const result = await pool.query(`
     SELECT * FROM users
@@ -17,4 +18,20 @@ const getUserLogic = async () => {
     return result;
 }
 
-export const userService = { createUserLogic, getUserLogic }
+//! get Single User DB Logic
+const getSingleUserLogic = async (id: string) => {
+    const result = await pool.query(`
+            SELECT * FROM users WHERE id = $1
+            `, [id])
+    return result
+}
+
+//! User Update Single Users
+const updateSingleUser = async (name: string, email: string, id: string) => {
+    const result = await pool.query(`
+            UPDATE users SET name=$1, email=$2 WHERE id=$3 RETURNING *
+            `, [name, email, id])
+    return result;
+}
+
+export const userService = { createUserLogic, getUserLogic, getSingleUserLogic, updateSingleUser }

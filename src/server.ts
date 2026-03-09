@@ -4,6 +4,7 @@ import dotenv from "dotenv"
 import path from "path"
 import logger from "./middleware/logger"
 import { userRoutes } from "./modules/users/users.route"
+import { userControllers } from "./modules/users/users.controller"
 
 
 
@@ -61,69 +62,6 @@ app.get('/', logger, (req: Request, res: Response) => {
 //! localhost:8080/user ==> "/"
 app.use("/users", userRoutes)
 
-//! Get all Users 
-
-// app.get("/users", logger, )
-//! get Single User by Id 
-
-
-app.get("/users/:id", logger, async (req: Request, res: Response) => {
-    // console.log(req.params.id);
-    try {
-        const result = await pool.query(`
-            SELECT * FROM users WHERE id = $1
-            `, [req.params.id])
-
-        if (result.rows.length === 0) {
-            res.status(404).json({
-                success: false,
-                message: "User Not Found"
-            })
-        } else {
-            res.status(201).json({
-                success: true,
-                message: "User Fetched Successfully",
-                data: result.rows[0]
-            })
-        }
-
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: "res."
-        })
-    }
-})
-
-//! Single user update 
-app.put("/users/:id", logger, async (req: Request, res: Response) => {
-    // console.log(req.params.id);
-    const { name, email } = req.body;
-    try {
-        const result = await pool.query(`
-            UPDATE users SET name=$1, email=$2 WHERE id=$3 RETURNING *
-            `, [name, email, req.params.id])
-
-        if (result.rows.length === 0) {
-            res.status(404).json({
-                success: false,
-                message: "User Not Found"
-            })
-        } else {
-            res.status(201).json({
-                success: true,
-                message: "User Updated Successfully",
-                data: result.rows[0]
-            })
-        }
-
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: "res."
-        })
-    }
-})
 
 //! Delete user from DB
 app.delete("/users/:id", logger, async (req: Request, res: Response) => {
