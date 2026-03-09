@@ -5,6 +5,7 @@ import path from "path"
 import logger from "./middleware/logger"
 import { userRoutes } from "./modules/users/users.route"
 import { userControllers } from "./modules/users/users.controller"
+import { todoRoutes } from "./modules/todos/todos.route"
 
 
 
@@ -66,25 +67,9 @@ app.use("/users", userRoutes)
 
 //! Todos CRUD
 //? Update Single User
-app.post("/todos", logger, async (req: Request, res: Response) => {
-    const { user_id, title } = req.body
-    try {
+app.use("/todos", todoRoutes)
 
-        const result = await pool.query(`
-                INSERT INTO todos(user_id, title) VALUES($1, $2) RETURNING *
-                `, [user_id, title])
-        res.status(201).json({
-            success: true,
-            message: " Todo added in table",
-            data: result.rows[0]
-        })
-    } catch (err: any) {
-        res.status(400).json({
-            success: true,
-            message: err.message
-        })
-    }
-})
+
 
 
 //! Get Todos
