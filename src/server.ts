@@ -1,55 +1,20 @@
 import express, { Request, Response } from "express"
-import { Pool } from "pg"
-import dotenv from "dotenv"
-import path from "path"
 import logger from "./middleware/logger"
 import { userRoutes } from "./modules/users/users.route"
 import { todoRoutes } from "./modules/todos/todos.route"
+import config from "./config"
+import initDB from "./config/db"
+import { authRoute } from "./modules/auth/auth.route"
 
 
 
-
-dotenv.config({ path: path.join(process.cwd(), '.env') })
 const app = express()
-const port = 8080
-// parser
+const port = config.port
 app.use(express.json())
-// app.use(express.urlencoded())
 
 
-//DB
-export const pool = new Pool({
-    connectionString: `${process.env.CONNECTION_STRING}`
-})
-
-const initDB = async () => {
-    await pool.query(`
-        CREATE TABLE IF NOT EXISTS users(
-        id SERIAL PRIMARY KEY,
-        name VARCHAR(100) NOT NULL,
-        email VARCHAR(100) UNIQUE NOT NULL,
-        age INT,
-        phone VARCHAR(15),
-        Address TEXT,
-        created_at TIMESTAMP DEFAULT NOW(),
-        updated_at TIMESTAMP DEFAULT NOW()
-        )
-        `)
 
 
-    await pool.query(`
-            CREATE TABLE IF NOT EXISTS todos(
-            id SERIAL PRIMARY KEY,
-            user_id INT REFERENCES users(id) ON DELETE CASCADE,
-            title VARCHAR(200) NOT NULL,
-            description TEXT,
-            completed BOOLEAN DEFAULT false,
-            due_date DATE,
-            created_at TIMESTAMP DEFAULT NOW(),
-            updated_at TIMESTAMP DEFAULT NOW()
-            )
-            `)
-}
 initDB()
 
 
@@ -68,7 +33,8 @@ app.use("/users", userRoutes)
 //? Update Single User
 app.use("/todos", todoRoutes)
 
-
+//! Auth CRUD
+app.use("/auth", authRoute)
 
 
 //! 404app   res.status(404).json({        success: false,        message: "Not Found",        data: req.path    })})app.listen(port, () => {    console.log(`Example app listening on port ${port}`)})

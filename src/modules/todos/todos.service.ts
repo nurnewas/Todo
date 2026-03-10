@@ -18,6 +18,7 @@ const getTodos = async () => {
     return result;
 }
 
+//! get single todo
 const getSingleTodo = async (id: any) => {
     const result = await pool.query(`
             SELECT * FROM todos WHERE id = $1

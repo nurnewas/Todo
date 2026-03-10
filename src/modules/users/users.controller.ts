@@ -6,10 +6,9 @@ import { userService } from "./users.service"
 
 //! User Post Req & Res
 const createUser = async (req: Request, res: Response) => {
-    const { name, email } = req.body
 
     try {
-        const result = await userService.createUserLogic(name, email)
+        const result = await userService.createUserLogic(req.body)
         // console.log(result.rows[0]);
         res.status(201).json({
             success: true,
@@ -100,29 +99,29 @@ const updateSingleUser = async (req: Request, res: Response) => {
 
 //! Delete user from DB
 const deleteUser = async (req: Request, res: Response) => {
-        try {
-            const result = await userService.deleteUser(req.params.id as string)
+    try {
+        const result = await userService.deleteUser(req.params.id as string)
 
-            if (result.rowCount === 0) {
-                res.status(404).json({
-                    success: false,
-                    message: "User Not Found"
-                })
-            } else {
-                res.status(201).json({
-                    success: true,
-                    message: "User Deleted",
-                    data: null,
-                })
-            }
-
-        } catch (error) {
-            res.status(500).json({
+        if (result.rowCount === 0) {
+            res.status(404).json({
                 success: false,
-                message: " User Not found "
+                message: "User Not Found"
+            })
+        } else {
+            res.status(201).json({
+                success: true,
+                message: "User Deleted",
+                data: null,
             })
         }
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: " User Not found "
+        })
     }
+}
 
 
 
