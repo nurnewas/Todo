@@ -4,8 +4,8 @@ import { NextFunction } from 'express';
 
 import { Request, Response } from "express"
 import config from '../config';
-
-const auth = () => {
+// roll = ["admin", "user"]
+const auth = (...role: string[]) => {
     return async (req: Request, res: Response, next: NextFunction) => {
         try {
             const token = req.headers.authorization;
@@ -13,9 +13,16 @@ const auth = () => {
             if (!token) {
                 return res.status(500).json({ message: " You are not allow" })
             }
-            const decoded = jwt.verify(token, config.jwtSecret as string)
+            const decoded = jwt.verify(token, config.jwtSecret as string) as JwtPayload
             console.log({ decoded });
-            req.user = decoded as JwtPayload;
+            req.user = decoded;
+
+
+            if (role.length && !role.includes(decoded.role as string)) {
+                return res.status(500).json({
+                    error: "UnAuthorise !!!"
+                })
+            }
             next()
         } catch (err: any) {
             res.status(500).json({

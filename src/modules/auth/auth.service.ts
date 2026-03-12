@@ -20,7 +20,7 @@ const userLogin = async (email: string, password: string) => {
     if (!match) {
         return false;
     }
-    const token = jwt.sign({ name: user.name, email: user.email }, config.jwtSecret as string, { expiresIn: "1d" })
+    const token = jwt.sign({ name: user.name, email: user.email, role: user.role }, config.jwtSecret as string, { expiresIn: "1d" })
 
     console.log({ token });
     return { token, user }

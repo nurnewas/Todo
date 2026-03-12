@@ -13,15 +13,15 @@ export const router = express.Router()
 router.post("/", userControllers.createUser)
 
 //! User Get Route
-router.get("/", logger, auth(), userControllers.getUser)
+router.get("/", logger, auth("admin"), userControllers.getUser)
 
 //! User Get single Route
-router.get("/:id", userControllers.getSingleUser)
+router.get("/:id", auth("admin", "user"), userControllers.getSingleUser)
 
 //! User Update Single Users
-router.put("/:id", userControllers.updateSingleUser)
+router.put("/:id", auth("admin", "user"), userControllers.updateSingleUser)
 
 //! Delete user from DB
-router.delete("/:id", userControllers.deleteUser)
+router.delete("/:id", auth("admin", "user"), userControllers.deleteUser)
 
 export const userRoutes = router;
